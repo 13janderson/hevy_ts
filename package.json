@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
     "typescript-language-server": "^4.3.4"
   }
 }
