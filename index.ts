@@ -11,8 +11,7 @@ if (!api_key){
     throw new Error("Failed to read API_KEY from .env.");
 }
 
-let params = new v1WorkoutsParams(api_key)
-let workouts = new v1Workouts(params)
+    let workouts = new v1Workouts(api_key)
 
 var page = await(workouts.NextPage())
 while(page){
