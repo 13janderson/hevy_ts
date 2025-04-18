@@ -1,19 +1,21 @@
 const cachedDirectory = `${__dirname}/.cached`
 export async function cachedFetch(
-    input: string | URL | globalThis.Request, init?: RequestInit, cacheExpiryMS: number = 5000): Promise<Response>{
+    input: string | URL | globalThis.Request, init?: RequestInit, cacheExpiryMS: number = new DateBuilder().AddDays(1).Milliseconds()): Promise<Response>{
 
     let inputHash = Bun.hash(input as string)
     let cachedFilePath = `${cachedDirectory}/${inputHash}.json`
     let cachedFile = Bun.file(cachedFilePath)
     if (await cachedFile.exists()){
         let expiryTimeMS = new DateBuilder(cachedFile.lastModified).AddMilliSeconds(cacheExpiryMS).Milliseconds()
-        console.log(new DateBuilder(cachedFile.lastModified).Days())
 
         if (Date.now() <= expiryTimeMS){
             // Read the JSON of the response body and 
+            console.log("Cache")
             return new Response(await cachedFile.json())
         }
     }
+
+    console.log("Fetch")
     let response = await fetch(input, init)
     let responseJSON = await response.text()
     let responseToDisk = new Response(JSON.stringify(responseJSON))
@@ -22,7 +24,7 @@ export async function cachedFetch(
     return new Response(responseJSON)
 }
 
-// Provide the ability to create dates relative to Date.Now
+// Provide the ability to create dates relative to a starting date
 export class DateBuilder{
     private static SECOND = 1000
     private static MINUTE = 60 * this.SECOND
@@ -30,7 +32,7 @@ export class DateBuilder{
     private static DAY = 24 * this.HOUR
 
     constructor(
-        private dateMs: number
+        private dateMs: number = 0
     ){
     }
 
