@@ -1,15 +1,17 @@
 const cachedDirectory = `${__dirname}/.cached`
 export async function cachedFetch(
-    input: string | URL | globalThis.Request, init?: RequestInit, cacheExpMS : number = (new DateFromNowBuilder().AddMins(10)).DateMS()): Promise<Response>{
+    input: string | URL | globalThis.Request, init?: RequestInit, cacheExpiryMS: number = 5000 ): Promise<Response>{
 
     let inputHash = Bun.hash(input as string)
     let cachedFilePath = `${cachedDirectory}/${inputHash}.json`
     let cachedFile = Bun.file(cachedFilePath)
-    console.log(input)
-    console.log(cachedFile.name)
+    // console.log(input)
+    // console.log(cachedFile.name)
     if (await cachedFile.exists()){
-        let modifiedTime = (await cachedFile.stat()).mtimeMs
-        if (modifiedTime < cacheExpMS){
+        let expiryTimeMS = new DateBuilder(cachedFile.lastModified).AddMilliSeconds(cacheExpiryMS).Milliseconds()
+        console.log(cachedFile.lastModified)
+        console.log(expiryTimeMS)
+        if (Date.now() <= expiryTimeMS){
             // Read the JSON of the response body and 
             console.log("Cache")
             return new Response(await cachedFile.json())
@@ -24,35 +26,42 @@ export async function cachedFetch(
     return new Response(responseJSON)
 }
 
-
-
 // Provide the ability to create dates relative to Date.Now
-export class DateFromNowBuilder{
-    private SECOND = 1000
-    private MINUTE = 60 * this.SECOND
-    private HOUR = 60 * this.MINUTE
-    private DAY = 24 * this.HOUR
+export class DateBuilder{
+    private static SECOND = 1000
+    private static MINUTE = 60 * this.SECOND
+    private static HOUR = 60 * this.MINUTE
+    private static DAY = 24 * this.HOUR
+
     constructor(
-        private date = Date.now()
-    ){}
+        private dateMs: number
+    ){
+    }
 
-    AddDays(d: number = 1): DateFromNowBuilder{
-        this.date += d * this.DAY
+    AddDays(d: number = 1): DateBuilder{
+        this.dateMs += d * DateBuilder.DAY
         return this
     }
 
-    AddMins(m: number = 1): DateFromNowBuilder{
-        this.date += m * this.MINUTE
+    AddMins(m: number = 1): DateBuilder{
+        this.dateMs += m * DateBuilder.MINUTE
         return this
     }
 
-    AddSeconds(s: number = 1): DateFromNowBuilder{
-        this.date += s * this.SECOND
+    AddSeconds(s: number = 1): DateBuilder{
+        this.dateMs += s * DateBuilder.SECOND
         return this
     }
 
-    DateMS(): number{
-        return this.date
+    AddMilliSeconds(ms: number = 1): DateBuilder{
+        this.dateMs += ms
+        return this
+    }
+
+    // To do, add Seconds(), Hours(), Days()
+
+    Milliseconds(): number{
+        return this.dateMs
     }
 }
 
