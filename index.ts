@@ -1,6 +1,4 @@
-import { v1Workouts, v1WorkoutsParams, v1WorkoutsCount} from "./src/types/hevy-api-endpoints";
-import type { v1WorkoutsResponse, v1WorkoutsCountResponse} from "./src/types/hevy-api-endpoints";
-import type { Workout } from "./src/types/hevy-api-types";
+import { v1Workouts} from "./src/types/hevy-api-endpoints";
 import * as dotenv from 'dotenv';
 
 // Loads .env file into process.env
@@ -11,18 +9,10 @@ if (!api_key){
     throw new Error("Failed to read API_KEY from .env.");
 }
 
-    let workouts = new v1Workouts(api_key)
-
-var page = await(workouts.NextPage())
+let v1WorkoutsEndpoint = new v1Workouts(api_key)
+var page = await(v1WorkoutsEndpoint.NextPage())
 while(page){
-    console.log((page?.workouts)?.length)
-    page = await (workouts.NextPage())
-
-    // console.log(page?.workouts[0])
-    // break
+    page = await (v1WorkoutsEndpoint.NextPage())
 }
 
 
-// let workoutsResponse = await GetAllWorkouts();
-// let workouts = workoutsResponse.workouts;
-// console.log(workouts[0].exercises[0].sets);
