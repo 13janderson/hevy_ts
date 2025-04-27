@@ -1,6 +1,6 @@
 import { cachedFetch } from "../cache/cachedFetch";
-import type { Workout, Exercise, Set} from "../types/hevy-api-types";
-import { createObjectCsvWriter } from "csv-writer";
+import type { Workout } from "../types/workout";
+import type { Set} from "../types/set";
 
 export type v1WorkoutsResponse = {
   /**
