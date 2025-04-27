@@ -51,7 +51,6 @@ export function v1WorkoutsResponseFlatten(response: v1WorkoutsResponse): Set[]{
     }
   }
   return sets
-
 }
 
 export class v1Workouts{
@@ -113,25 +112,17 @@ export class v1Workouts{
        return pages
     }
 
-  // Paginates all workouts on the endpoint and exports locally to csv
-  async export(exportPath: string){
-    // const csvWriter = createObjectCsvWriter(
-    //   {
-    //     path: exportPath,
-    //     header: [
-    //     ]
-    //   }
-    // )
-    // var page = await(this.NextPage())
-    // while(page){
-    //   let workouts = page.workouts
-    //   let workout = workouts[0]
-    //   workout?.exercises
-    //   // NextPage returns a list of pages
-    //   // pages themselves have a list of workouts
-    //   page = await (this.NextPage())
-    //   // Save page
-    // }
+  // Paginates all workouts on the endpoint and exports locally to JSON
+  async exportJSON(exportPath: string){
+    var page = await(this.NextPage())
+    let allSets: Set[] = []
+    while(page){
+      let pageSets = v1WorkoutsResponseFlatten(page)
+      allSets.push(...pageSets)
+      page = await (this.NextPage())
+    }
+
+    Bun.write(exportPath, JSON.stringify(allSets, null, "\t"),  {createPath: true})
   }
 }
 
