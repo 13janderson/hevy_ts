@@ -524,6 +524,7 @@ id: string;
      */
     deleted_at?: string;
 };
+
 export type PaginatedWorkoutEvents = {
     /**
      * @description The current page number
@@ -536,4 +537,21 @@ page: number;
        */
 page_count: number;
             /** @description An array of workout events (either updated or deleted) */
-            events: (components["schemas"]["UpdatedWorkout"] | components["schemas"]["DeletedWorkout"])[];
+            events: (components["schemas"]["UpdatedWorkout"] | components["schemas"]["DeletedWorkout"])[]
+
+};
+
+export type v1WorkoutsResponse = {
+    /**
+        * @description as Workout[] current page number
+    * @example 1
+    */
+    page?: number;
+    /**
+        * @description Total number of pages
+    * @example 5
+    */
+    page_count?: number;
+    workouts?: Workout[] 
+}
+

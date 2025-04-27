@@ -10,12 +10,10 @@ export async function cachedFetch(
 
         if (Date.now() <= expiryTimeMS){
             // Read the JSON of the response body and 
-            console.log("Cache")
             return new Response(await cachedFile.json())
         }
     }
 
-    console.log("Fetch")
     let response = await fetch(input, init)
     let responseJSON = await response.text()
     let responseToDisk = new Response(JSON.stringify(responseJSON))
