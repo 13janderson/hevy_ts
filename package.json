@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "csv-writer": "^1.6.0",
     "dotenv": "^16.5.0",
     "typescript-language-server": "^4.3.4"
   }

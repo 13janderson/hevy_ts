@@ -5,6 +5,7 @@ export async function cachedFetch(
     let inputHash = Bun.hash(input as string)
     let cachedFilePath = `${cachedDirectory}/${inputHash}.json`
     let cachedFile = Bun.file(cachedFilePath)
+  console.log(input)
     if (await cachedFile.exists()){
         let expiryTimeMS = new DateBuilder(cachedFile.lastModified).AddMilliSeconds(cacheExpiryMS).Milliseconds()
 

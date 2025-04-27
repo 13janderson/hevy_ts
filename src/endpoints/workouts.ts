@@ -1,5 +1,59 @@
 import { cachedFetch } from "../cache/cachedFetch";
-import type { v1WorkoutsResponse } from "../types/hevy-api-types";
+import type { Workout, Exercise, Set} from "../types/hevy-api-types";
+import { createObjectCsvWriter } from "csv-writer";
+
+export type v1WorkoutsResponse = {
+  /**
+        * @description as Workout[] current page number
+    * @example 1
+    */
+  page?: number;
+  /**
+        * @description Total number of pages
+    * @example 5
+    */
+  page_count?: number;
+  workouts?: Workout[] 
+}
+
+export function v1WorkoutsResponseFlatten(response: v1WorkoutsResponse): Set[]{
+  let workouts = response.workouts
+  if (!workouts){
+    return []
+  }
+
+  let sets: Set[] = []
+  for (let i = 0; i < workouts.length; i++){
+    let workout = workouts[i]
+    if(!workout){
+      continue
+    }
+    let exercises = workout.exercises
+    if (!exercises){
+      continue
+    }
+    for (let j = 0; j < exercises.length; j++){
+      let exercise = exercises[j]
+      if (!exercise){
+        continue
+      }
+      let exerciseSets = exercise.sets
+      if (!exerciseSets){
+        continue
+      }
+      for (let k =0; k < exerciseSets.length; k++){
+        let set = exerciseSets[k]
+        if (!set){
+          continue
+        }
+        sets[sets.length] = set
+      }
+    }
+  }
+  return sets
+
+}
+
 export class v1Workouts{
     private pageCount: number | null = null
     private pageRead= 0
@@ -58,4 +112,26 @@ export class v1Workouts{
 
        return pages
     }
+
+  // Paginates all workouts on the endpoint and exports locally to csv
+  async export(exportPath: string){
+    // const csvWriter = createObjectCsvWriter(
+    //   {
+    //     path: exportPath,
+    //     header: [
+    //     ]
+    //   }
+    // )
+    // var page = await(this.NextPage())
+    // while(page){
+    //   let workouts = page.workouts
+    //   let workout = workouts[0]
+    //   workout?.exercises
+    //   // NextPage returns a list of pages
+    //   // pages themselves have a list of workouts
+    //   page = await (this.NextPage())
+    //   // Save page
+    // }
+  }
 }
+

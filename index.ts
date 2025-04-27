@@ -1,4 +1,4 @@
-import { v1Workouts} from "./src/types/hevy-api-endpoints";
+import { v1Workouts, v1WorkoutsResponseFlatten} from "./src/endpoints/workouts";
 import * as dotenv from 'dotenv';
 
 // Loads .env file into process.env
@@ -11,8 +11,9 @@ if (!api_key){
 
 let v1WorkoutsEndpoint = new v1Workouts(api_key)
 var page = await(v1WorkoutsEndpoint.NextPage())
+
 while(page){
-    page = await (v1WorkoutsEndpoint.NextPage())
+  page = await (v1WorkoutsEndpoint.NextPage())
 }
 
 
