@@ -1,11 +1,11 @@
-const cachedDirectory = `${__dirname}/.cached`
+const cachedDirectory = `${process.env.HOME || __dirname}/.cache/hevy`
 export async function cachedFetch(
     input: string | URL | globalThis.Request, init?: RequestInit, cacheExpiryMS: number = new DateBuilder().AddDays(1).Milliseconds()): Promise<Response>{
 
+  console.log(input)
     let inputHash = Bun.hash(input as string)
     let cachedFilePath = `${cachedDirectory}/${inputHash}.json`
     let cachedFile = Bun.file(cachedFilePath)
-  console.log(input)
     if (await cachedFile.exists()){
         let expiryTimeMS = new DateBuilder(cachedFile.lastModified).AddMilliSeconds(cacheExpiryMS).Milliseconds()
 

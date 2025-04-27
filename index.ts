@@ -11,11 +11,10 @@ if (!api_key){
 }
 
 let v1WorkoutsEndpoint = new v1Workouts(api_key)
-v1WorkoutsEndpoint.exportJSON("export.json")
-// var page = await(v1WorkoutsEndpoint.NextPage())
-//
-// while(page){
-//   page = await (v0WorkoutsEndpoint.NextPage())
-// }
+var page = await(v1WorkoutsEndpoint.NextPage())
+
+while(page){
+  page = await (v1WorkoutsEndpoint.NextPage())
+}
 
 
